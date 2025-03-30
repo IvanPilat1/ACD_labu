@@ -1,53 +1,58 @@
-import numpy as np
-import tkinter as tk
-from tkinter import messagebox
+class DynamicArray:
+    def __init__(self):
+        self.data = []
+    
+    def display(self):
+        print(self.data)
+    
+    def insert(self, index, value):
+        if 0 <= index <= len(self.data):
+            self.data.insert(index, value)
+        else:
+            print("Індекс поза межами масиву")
+    
+    def delete(self, index):
+        if 0 <= index < len(self.data):
+            del self.data[index]
+        else:
+            print("Індекс поза межами масиву")
+    
+    def search_by_index(self, index):
+        if 0 <= index < len(self.data):
+            return self.data[index]
+        else:
+            print("Індекс поза межами масиву")
+            return None
+    
+    def search_by_value(self, value):
+        indices = [i for i, x in enumerate(self.data) if x == value]
+        return indices if indices else "Значення не знайдено"
+    
+    def max_abs_element(self):
+        if not self.data:
+            return None
+        max_element = self.data[0]
+        for num in self.data:
+            if abs(num) > abs(max_element):
+                max_element = num
+        return max_element
+    
+    def sum_between_first_two_positives(self):
+        pos_indices = [i for i, x in enumerate(self.data) if x > 0]
+        if len(pos_indices) < 2:
+            return 0
+        return sum(self.data[pos_indices[0] + 1 : pos_indices[1]])
+    
+    def transform(self):
+        others = [x for x in self.data if x not in (0, 1)]
+        zeros_ones = [x for x in self.data if x in (0, 1)]
+        self.data = others + zeros_ones
 
-# Генерація масиву
-def generate_array():
-    np.random.seed(0)  # Для відтворюваності результатів
-    arr = np.random.randint(-10, 10, 15)
-
-    # Гарантуємо наявність хоча б одного нуля та одиниці
-    if 0 not in arr:
-        arr[0] = 0
-    if 1 not in arr:
-        arr[1] = 1
-
-    return arr
-
-# Обчислення результатів
-def calculate_results():
-    arr = generate_array()
-
-    max_abs_element = arr[0]  # Початкове значення для порівняння
-    for num in arr:
-        if abs(num) > abs(max_abs_element):
-            max_abs_element = num
-    # Знаходимо суму елементів між першим і другим додатними елементами
-    positive_indices = [i for i, x in enumerate(arr) if x > 0]
-    sum_between = sum(arr[positive_indices[0] + 1 : positive_indices[1]]) if len(positive_indices) > 1 else 0
-
-    # Перетворюємо масив: нулі та одиниці переміщаємо в кінець
-    transformed_arr = sorted(arr, key=lambda x: x in [0, 1])
-    transformed_arr = [int(x) for x in transformed_arr]  # Перетворюємо на звичайні числа
-
-    # Виводимо результати
-    result_text = (
-        f"Початковий масив: {arr}\n"
-        f"Максимальний за модулем елемент: {max_abs_element}\n"
-        f"Сума між першим і другим додатними елементами: {sum_between}\n"
-        f"Перетворений масив: {transformed_arr}"
-    )
-
-    messagebox.showinfo("Результати", result_text)
-
-    # Створення графічного інтерфейсу
-root = tk.Tk()
-root.title("Масив і обчислення")
-
-# Кнопка для обчислення
-button = tk.Button(root, text="Обчислити", command=calculate_results)
-button.pack(pady=20)
-
-# Запуск інтерфейсу
-root.mainloop()
+# Приклад використання
+arr = DynamicArray()
+arr.data = [3, 0, 1, -2, 5, 0, 7, 1, -3]
+arr.display()
+print("Максимальний за модулем елемент:", arr.max_abs_element())
+print("Сума між першим і другим додатними елементами:", arr.sum_between_first_two_positives())
+arr.transform()
+arr.display()
